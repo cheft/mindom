@@ -1,5 +1,5 @@
 /**
- * a micro vitual dom framewok
+ * a micro vitual dom framework
  * 通过 hyperscript 把 <div><h1>hello</h1></div> 转化成 h('div', {}, h('h1', null, 'hello'))
  * 再自行转化成 { tagName: 'div', attrs: {}, children: []} 虚拟 dom 树，然后递归进行处理
  * @author: Cheft
@@ -27,16 +27,19 @@ function h(tagName, attrs = {}, ...children) {
  * @param {*} node     新的虚拟节点
  */
 function render(el, element, oldNode, node) {
-  // 如果旧节点没有，直接将虚拟节点换成
-  if (!oldNode) {
+  if (!oldNode) { // 如果旧节点没有，直接将虚拟节点换成
     element = el.insertBefore(createElement(node), element)
+  } else if (!node) { // 如果新节点没有，删除 dom
+    el.removeChild(element)
   } else if (node.tagName && node.tagName === oldNode.tagName) {
     mergeAttrs(element, oldNode.attrs, node.attrs)
     for (var i = 0; i < node.children.length; i++) {
-      mergeAttrs(element.children[i], oldNode.children[i].attrs, node.children[i].attrs)
+      render(element, element.children[i], oldNode.children[i], node.children[i])
     }
+  } else if (node.tagName !== oldNode.tagName) { // 如果节点类型不同，替换
+    var i = element
+    el.replaceChild((element = createElement(node)), i)
   }
-  // :TODO
   return element
 }
 
@@ -47,14 +50,14 @@ function render(el, element, oldNode, node) {
  * @param {*} newAttrs 新属性
  */
 function mergeAttrs(element, oldAttrs, newAttrs) {
-  var attrs = {}
-
   if (typeof newAttrs !== 'object' || Array.isArray(newAttrs)) {
-    return newAttrs
+    return setAttrs(element, attrs)
   }
 
+  var attrs = {}
+
   for (var attr in oldAttrs) {
-    attrs[attr] = oldAttrs[attr]
+    attrs[attr] = false
   }
 
   for (var attr in newAttrs) {
@@ -97,16 +100,3 @@ function createElement(node) {
   }
   return element
 }
-
-// test
-console.log(h('h1'))
-console.log(h('div', {}, 1))
-console.log(h('div', {}, h('h1', null, 'hello')))
-console.log(h('div', {}, h('h1', null, 'hello'), h('h2', null, 'world')))
-
-
-var node = h('div', {class: 'demo'}, h('h1', {style: 'color: red;'}, 'hello'), h('h2', {style: 'color: green;'}, 'world'))
-var element = render(document.body, null, null, node)
-
-var newNode = h('div', {class: 'test'}, h('h1', {style: 'color: yellow;'}, 'hello'), h('h2', {style: 'color: pink;'}, 'world'))
-render(document.body, element, node, newNode)
