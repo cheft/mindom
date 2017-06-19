@@ -10,11 +10,11 @@
  * @param {*} attrs 标签属性 
  * @param {*} ...children 子标签数组
  */
-function h(tagName, attrs = {}, ...children) {
+function h(tagName, attrs, ...children) {
   return typeof tagName === 'function' ? h() :
     {
       tagName: tagName,
-      attrs: attrs,
+      attrs: attrs || {},
       children: children
     }
 }
@@ -34,6 +34,7 @@ function render(el, element, oldNode, node) {
   } else if (node.tagName && node.tagName === oldNode.tagName) {
     mergeAttrs(element, oldNode.attrs, node.attrs)
     for (var i = 0; i < node.children.length; i++) {
+      // :TODO 当子节点为字符串时
       render(element, element.children[i], oldNode.children[i], node.children[i])
     }
   } else if (node.tagName !== oldNode.tagName) { // 如果节点类型不同，替换
@@ -99,4 +100,23 @@ function createElement(node) {
     element = document.createTextNode(node)
   }
   return element
+}
+
+function Dom(opts) {
+  this.opts = opts
+  this.state = Object.assign(opts.state)
+}
+
+Dom.prototype = {
+  setState: function(state) {
+    this.state = state
+    this.mount()
+  },
+
+  mount: function(el) {
+    if (el) this.el = el
+    var node = this.opts.render.apply(this, [this.state])
+    this.element = render(this.el, this.element, this.oldNode, node)
+    this.oldNode = node
+  }
 }

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var state = {
   count: 0,
@@ -20,25 +20,43 @@ var component = {
 
   render: function render() {
     return h(
-      "main",
+      'main',
       null,
       h(
-        "h1",
+        'h1',
         null,
         state.count
       ),
       h(
-        "button",
+        'button',
         { onclick: state.add },
-        "+"
+        '+'
       ),
       h(
-        "button",
+        'button',
         { onclick: state.sub },
-        "-"
+        '-'
       )
     );
   }
 };
 
 dom.mount(document.body, component);
+
+var d = new Dom({
+  state: { style: 'color: red;' },
+
+  render: function render(state) {
+    return h(
+      'h1',
+      { style: state.style },
+      'hello world'
+    );
+  }
+});
+
+d.mount(document.body);
+
+setTimeout(function() {
+  d.setState({ style: 'color: green;' });
+}, 3000);

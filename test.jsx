@@ -22,3 +22,17 @@ const component = {
 }
 
 dom.mount(document.body, component)
+
+var d = new Dom({
+  state: {style: 'color: red;'},
+
+  render(state) {
+    return <h1 style={state.style}>hello world</h1>
+  }
+})
+
+d.mount(document.body)
+
+setTimeout(function() {
+  d.setState({ style: 'color: green;' });
+}, 3000);
