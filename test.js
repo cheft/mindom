@@ -44,12 +44,18 @@ var component = {
 dom.mount(document.body, component);
 
 var d = new Dom({
-  state: { style: 'color: red;' },
+  state: {
+    style: 'color: red;',
 
-  render: function render(state) {
+    test: function () {
+      console.log('hello world');
+    }
+  },
+
+  render: function (state) {
     return h(
       'h1',
-      { style: state.style },
+      { style: state.style, onClick: state.test },
       'hello world'
     );
   }
@@ -57,6 +63,6 @@ var d = new Dom({
 
 d.mount(document.body);
 
-setTimeout(function() {
+setTimeout(function () {
   d.setState({ style: 'color: green;' });
 }, 3000);

@@ -24,10 +24,16 @@ const component = {
 dom.mount(document.body, component)
 
 var d = new Dom({
-  state: {style: 'color: red;'},
+  state: {
+    style: 'color: red;',
+    
+    test: function() {
+      console.log('hello world')
+    }
+  },
 
   render(state) {
-    return <h1 style={state.style}>hello world</h1>
+    return <h1 style={state.style} onClick={state.test}>hello world</h1>
   }
 })
 

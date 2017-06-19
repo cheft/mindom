@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+  <script type="text/javascript" src="./mindom.js"></script>
+  <script type="text/javascript">
+
+    var d = new Dom({
+      state: {
+        style: 'color: red;',
+
+        test: function(e) {
+          console.log(e, 'hello world');
+        }
+      },
+
+      render: function(state) {
+        return h(
+          'h1',
+          { style: state.style, onclick: state.test },
+          'hello world'
+        );
+      }
+    });
+
+    d.mount(document.body);
+  </script>
+  </body>
+</html>

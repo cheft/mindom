@@ -115,8 +115,10 @@ Dom.prototype = {
 
   mount: function(el) {
     if (el) this.el = el
-    var node = this.opts.render.apply(this, [this.state])
+    var node = this.opts.render.call(this, this.state)
     this.element = render(this.el, this.element, this.oldNode, node)
     this.oldNode = node
   }
 }
+
+// Dom.h = h
